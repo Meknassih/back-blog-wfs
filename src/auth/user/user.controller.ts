@@ -27,7 +27,7 @@ export class UserController {
     if (user)
       return user;
     else
-      this.responseService.notLoggedIn(); // TODO: implement this
+      this.responseService.notLoggedIn();
   }
 
   /**
