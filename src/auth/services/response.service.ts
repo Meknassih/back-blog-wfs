@@ -2,8 +2,9 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class ResponseService {
-  /**@function badLogin
-   * @description Throws the exception of a login failure
+  /**
+   * Throws the exception of a login failure
+   * @function badLogin
    * @returns {HttpException}
    */
   badLogin(): HttpException {

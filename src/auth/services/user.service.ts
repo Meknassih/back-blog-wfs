@@ -5,14 +5,21 @@ import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UserLoginDto } from 'src/models/user';
 
+/**
+ * @constructs UserService
+ * @param {Repository<User>} userRepository The repository representing the users in the DB
+ */
 @Injectable()
 export class UserService {
+  /** @member {User} currentUser The user currently logged in or undefined if visitor */
   private currentUser: User;
+
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>
   ) { }
 
-  /**@async
+  /**
+   * @async
    * @function loginUser
    * @param  {UserLoginDto} user The user to verify credentials for
    * @returns {Promise<User>} Resolves with User or undefined
@@ -28,7 +35,8 @@ export class UserService {
     return this.currentUser;
   }
 
-  /**@async
+  /**
+   * @async
    * @function all
    * @description Gets all the users
    * @returns {Promise<User[]>} Resolves with an array of Users

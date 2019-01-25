@@ -11,6 +11,13 @@ export class LoginController {
     private readonly responseService: ResponseService
   ) { }
 
+  /**
+   * Handles a user that wants to log in
+   * @async
+   * @function login
+   * @param {UserLoginDto} user user data to check against the DB
+   * @returns {User | HttpException} returns the user logged in or an exception if authentication fails
+   */
   @Post()
   async login(@Body() user: UserLoginDto): Promise<User | HttpException> {
     const userFound = await this.userService.loginUser(user);
@@ -20,6 +27,12 @@ export class LoginController {
       return this.responseService.badLogin();
   }
 
+  /**
+   * Returns all the existing users
+   * @async
+   * @function users
+   * @returns {Promise<User[]>}
+   */
   @Get()
   async users(): Promise<User[]> {
     return this.userService.all();
