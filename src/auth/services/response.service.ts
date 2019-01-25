@@ -1,5 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
+/**
+ * Throws exceptions
+ * @constructs ResponseController
+ */
 @Injectable()
 export class ResponseService {
   /**

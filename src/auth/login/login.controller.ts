@@ -4,6 +4,12 @@ import { UserDto, UserLoginDto } from 'src/models/user';
 import { User } from '../entities/user.entity';
 import { ResponseService } from '../services/response.service';
 
+/**
+ * Handles login operations
+ * @constructs LoginController
+ * @param {UserService} userService
+ * @param {ResponseService} responseService
+ */
 @Controller('login')
 export class LoginController {
   constructor(
@@ -16,7 +22,7 @@ export class LoginController {
    * @async
    * @function login
    * @param {UserLoginDto} user user data to check against the DB
-   * @returns {User | HttpException} returns the user logged in or an exception if authentication fails
+   * @returns {Promise<(User|HttpException)>} returns the user logged in or an exception if authentication fails
    */
   @Post()
   async login(@Body() user: UserLoginDto): Promise<User | HttpException> {
@@ -25,16 +31,5 @@ export class LoginController {
       return userFound;
     else
       return this.responseService.badLogin();
-  }
-
-  /**
-   * Returns all the existing users
-   * @async
-   * @function users
-   * @returns {Promise<User[]>}
-   */
-  @Get()
-  async users(): Promise<User[]> {
-    return this.userService.all();
   }
 }

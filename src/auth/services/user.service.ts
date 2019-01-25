@@ -6,6 +6,7 @@ import { User } from '../entities/user.entity';
 import { UserLoginDto } from 'src/models/user';
 
 /**
+ * Handles and manipulates all user data
  * @constructs UserService
  * @param {Repository<User>} userRepository The repository representing the users in the DB
  */
@@ -19,12 +20,13 @@ export class UserService {
   ) { }
 
   /**
+   * Resolves with User or undefined
    * @async
    * @function loginUser
    * @param  {UserLoginDto} user The user to verify credentials for
-   * @returns {Promise<User>} Resolves with User or undefined
+   * @returns {Promise<(User|undefined)>}
    */
-  async loginUser(user: UserLoginDto): Promise<User> {
+  async loginUser(user: UserLoginDto): Promise<User | undefined> {
     const userFound = await this.userRepository.find(
       {
         where: user
@@ -36,10 +38,18 @@ export class UserService {
   }
 
   /**
+   * Returns the data of the current user or undefined
+   * @function getCurrentUser
+   * @returns {(User|undefined)} 
+   */
+  getCurrentUser(): User | undefined { return this.currentUser; }
+
+  /**
+   * Resolves with an array of Users
    * @async
    * @function all
    * @description Gets all the users
-   * @returns {Promise<User[]>} Resolves with an array of Users
+   * @returns {Promise<User[]>}
    */
   async all(): Promise<User[]> {
     return await this.userRepository.find();
