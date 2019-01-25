@@ -1,11 +1,3 @@
-import { MongooseDocument } from 'mongoose';
-
-export class User {
-  username: string;
-  password: string;
-  email: string;
-}
-
 export class UserDto {
   readonly username: string;
   readonly password: string;
@@ -21,6 +13,11 @@ export class UserDto {
 export class UserLoginDto {
   readonly username: string;
   readonly password: string;
+
+  constructor(attributes: UserAttributes) {
+    this.username = attributes.username;
+    this.password = attributes.password;
+  }
 }
 
 export interface UserAttributes {
