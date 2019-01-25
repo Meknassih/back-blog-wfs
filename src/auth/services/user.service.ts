@@ -12,6 +12,11 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>
   ) { }
 
+  /**@async
+   * @function loginUser
+   * @param  {UserLoginDto} user The user to verify credentials for
+   * @returns {Promise<User>} Resolves with User or undefined
+   */
   async loginUser(user: UserLoginDto): Promise<User> {
     const userFound = await this.userRepository.find(
       {
@@ -23,6 +28,11 @@ export class UserService {
     return this.currentUser;
   }
 
+  /**@async
+   * @function all
+   * @description Gets all the users
+   * @returns {Promise<User[]>} Resolves with an array of Users
+   */
   async all(): Promise<User[]> {
     return await this.userRepository.find();
   }
