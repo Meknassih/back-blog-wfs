@@ -3,6 +3,8 @@ import { UserService } from '../services/user.service';
 import { ResponseService } from '../services/response.service';
 import { User, UserType } from '../entities/user.entity';
 import { AuthGuard } from '../guards/auth.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { RoleGuard } from '../guards/role.guard';
 
 /**
  * Handles user operations
@@ -11,7 +13,7 @@ import { AuthGuard } from '../guards/auth.guard';
  * @param {ResponseService} responseService
  */
 @Controller('user')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -25,11 +27,7 @@ export class UserController {
    */
   @Get()
   getUser(): User | HttpException {
-    const user = this.userService.getCurrentUser();
-    if (user)
-      return user;
-    else
-      this.responseService.notLoggedIn();
+    return this.userService.getCurrentUser();
   }
 
   /**
@@ -39,6 +37,7 @@ export class UserController {
    * @returns {Promise<User[]>}
    */
   @Get('all')
+  @Roles(UserType.ADMIN)
   async all(): Promise<User[]> {
     return this.userService.all();
   }
