@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UserLoginDto } from 'src/models/user';
 
@@ -40,7 +40,7 @@ export class UserService {
   /**
    * Returns the data of the current user or undefined
    * @function getCurrentUser
-   * @returns {(User|undefined)} 
+   * @returns {(User|undefined)}
    */
   getCurrentUser(): User | undefined { return this.currentUser; }
 
@@ -48,10 +48,20 @@ export class UserService {
    * Resolves with an array of Users
    * @async
    * @function all
-   * @description Gets all the users
    * @returns {Promise<User[]>}
    */
   async all(): Promise<User[]> {
     return await this.userRepository.find();
+  }
+
+  /**
+   * Resolves with the result of a user permanent deletion
+   * @async
+   * @function delete
+   * @param {string} username The username of the user to be deleted
+   * @returns {Promise<DeleteResult>}
+   */
+  async delete(username: string): Promise<DeleteResult> {
+    return await this.userRepository.delete({ username });
   }
 }
