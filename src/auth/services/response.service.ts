@@ -29,4 +29,11 @@ export class ResponseService {
       error: 'Cette requête nécessite d\'être connecté au préalable.',
     }, 401);
   }
+
+  unsufficientPrivileges(): HttpException {
+    throw new HttpException({
+      status: HttpStatus.UNAUTHORIZED,
+      error: 'Cette requête nécessite des droits plus élevés.',
+    }, 401);
+  }
 }

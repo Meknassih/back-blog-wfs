@@ -1,7 +1,8 @@
-import { Controller, Get, HttpException } from '@nestjs/common';
+import { Controller, Get, HttpException, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ResponseService } from '../services/response.service';
-import { User } from '../entities/user.entity';
+import { User, UserType } from '../entities/user.entity';
+import { AuthGuard } from '../guards/auth.guard';
 
 /**
  * Handles user operations
@@ -10,6 +11,7 @@ import { User } from '../entities/user.entity';
  * @param {ResponseService} responseService
  */
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
