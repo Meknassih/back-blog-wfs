@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { User } from 'src/auth/entities/user.entity';
 
 /**
  * Enum for article status. DRAFT means it has just been created,
@@ -21,7 +22,7 @@ export class Article {
   title: string;
 
   @Column('varchar')
-  author: string;
+  author: User;
 
   @Column('varchar')
   content: string;
