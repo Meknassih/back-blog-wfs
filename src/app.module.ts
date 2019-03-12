@@ -8,7 +8,6 @@ import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
-    AuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -19,9 +18,10 @@ import { ArticleModule } from './article/article.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    AuthModule,
     ArticleModule
   ],
   controllers: [AppController],
-  providers: [AppService, UserService],
+  providers: [AppService]
 })
 export class AppModule { }

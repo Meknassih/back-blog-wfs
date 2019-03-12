@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from 'src/article/entities/article.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
-
+//TODO: create controller to get article data issue #49
 /**
  * Handles and manipulates all articles
  * @constructs ArticleService
@@ -27,6 +27,7 @@ export class ArticleService {
     const article = await this.articleRepository.findOne(id);
     return article;
   }
+
   /**
    * Resolves with the result of the newly created Article
    * @async
@@ -62,5 +63,21 @@ export class ArticleService {
     }
 
     return result;
+  }
+
+  /**
+   * Resolves with all the Articles
+   * @async
+   * @function getAll
+   * @param {id} ownedByUserId Specify a user ID to restrict to articles owned only by a user
+   * @returns {Promise<Article[]>}
+   */
+  async getAll(ownedByUserId?: number): Promise<Article[]> {
+    let articles: Article[];
+    if (ownedByUserId)
+      articles = await this.articleRepository.find({ where: { id: ownedByUserId } });
+    else
+      articles = await this.articleRepository.find();
+    return articles;
   }
 }
