@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 
 /**
@@ -21,7 +21,7 @@ export class Article {
   @Column('varchar')
   title: string;
 
-  @Column('varchar')
+  @ManyToOne(type => User, user => user.articles)
   author: User;
 
   @Column('varchar')
@@ -33,6 +33,15 @@ export class Article {
     default: ArticleStatus.DRAFT
   })
   status: ArticleStatus;
+
+  @Column('int')
+  likes: number;
+
+  @Column('int')
+  dislikes: number;
+
+  @Column('mediumblob')
+  picture: Buffer;
 
   @CreateDateColumn()
   created: Date;

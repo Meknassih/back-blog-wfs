@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Article } from 'src/article/entities/article.entity';
 
 /**
  * Enum for user types. Higher values gives more permissions.
@@ -38,6 +39,9 @@ export class User {
     default: UserType.STANDARD
   })
   type: UserType;
+
+  @OneToMany(type => Article, article => article.author)
+  articles: Article[];
 
   @CreateDateColumn()
   created: Date;
