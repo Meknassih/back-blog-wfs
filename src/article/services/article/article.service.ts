@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from 'src/article/entities/article.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
-//TODO: create controller to get article data issue #49
+import { NewArticleDto } from 'src/models/article';
+import { UserService } from 'src/auth/services/user.service';
+
 /**
  * Handles and manipulates all articles
  * @constructs ArticleService
@@ -13,7 +15,8 @@ import { User } from 'src/auth/entities/user.entity';
 export class ArticleService {
 
   constructor(
-    @InjectRepository(Article) private readonly articleRepository: Repository<Article>
+    @InjectRepository(Article) private readonly articleRepository: Repository<Article>,
+    private readonly userService: UserService
   ) { }
 
   /**
@@ -79,5 +82,23 @@ export class ArticleService {
     else
       articles = await this.articleRepository.find();
     return articles;
+  }
+
+  /**
+   * Saves an article and resolves with the newly created article
+   * @async
+   * @function createArticle
+   * @param {NewArticleDto} articleDto Article as received in the request to be created in the DB
+   * @returns {Promise<Article>}
+   */
+  async createArticle(articleDto: NewArticleDto): Promise<Article> {
+    const article = new Article();
+    article.author = this.userService.getCurrentUser();
+    article.title = articleDto.title ? articleDto.title : '';
+    article.content = articleDto.content ? articleDto.content : '';
+    article.dislikes = 0;
+    article.likes = 0;
+    article.picture = new Buffer('IMAGE');
+    return await this.articleRepository.save(article);
   }
 }
