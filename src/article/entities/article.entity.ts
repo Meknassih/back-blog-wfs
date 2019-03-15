@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
+import { NoteArticle } from './noteArticle.entity';
 
 /**
  * Enum for article status. DRAFT means it has just been created,
@@ -23,6 +24,9 @@ export class Article {
 
   @ManyToOne(type => User, user => user.articles)
   author: User;
+
+  @OneToMany(type => NoteArticle, note => note.article)
+  notes: NoteArticle[];
 
   @Column('varchar')
   content: string;
