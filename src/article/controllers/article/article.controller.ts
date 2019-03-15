@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Post, Body, UseGuards, Delete, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, Post, Body, UseGuards, Delete, Param, Patch } from '@nestjs/common';
 import { UserService } from 'src/auth/services/user.service';
 import { ResponseService } from 'src/auth/services/response.service';
 import { Article } from 'src/article/entities/article.entity';
@@ -40,5 +40,11 @@ export class ArticleController {
   @Roles(UserType.AUTHOR)
   async deleteArticle(@Param('id') articleId: number): Promise<boolean> {
     return (await this.articleService.delete(articleId)).raw.affectedRows >= 1;
+  }
+
+  @Patch(':id')
+  @Roles(UserType.AUTHOR)
+  async editArticle(@Param('id') articleId: number, @Body() articlePart: Partial<NewArticleDto>): Promise<boolean> {
+    return (await this.articleService.updateArticle(articleId, articlePart)).raw.affectedRows >= 1;
   }
 }

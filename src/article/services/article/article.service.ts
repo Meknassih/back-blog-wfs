@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from 'src/article/entities/article.entity';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { NewArticleDto } from 'src/models/article';
 import { UserService } from 'src/auth/services/user.service';
@@ -111,5 +111,16 @@ export class ArticleService {
     article.likes = 0;
     article.picture = new Buffer('IMAGE');
     return await this.articleRepository.save(article);
+  }
+
+  /**
+   * Updates an article and resolves with true if changes were made
+   * @async
+   * @function updateArticle
+   * @param {Partial<NewArticleDto>} articleDto Part of an Article to be updated in the DB
+   * @returns {Promise<Article>}
+   */
+  async updateArticle(articleId: number, articleDto: Partial<NewArticleDto>): Promise<UpdateResult> {
+    return await this.articleRepository.update(articleId, articleDto);
   }
 }
