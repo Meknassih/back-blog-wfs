@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { NoteArticle } from './noteArticle.entity';
-import { Comment } from './comment.entity';
+import { Commentary } from './commentary.entity';
 
 /**
  * Enum for article status. DRAFT means it has just been created,
@@ -33,10 +33,10 @@ export class Article {
   })
   notes: NoteArticle[];
 
-  @OneToMany(type => Comment, comment => comment.article, {
+  @OneToMany(type => Commentary, comment => comment.article, {
     eager: true
   })
-  comments: Comment[];
+  comments: Commentary[];
 
   @Column('varchar')
   content: string;

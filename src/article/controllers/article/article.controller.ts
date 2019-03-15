@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Post, Body, UseGuards, Delete, Param, Patch } from '@nestjs/common';
+import { Controller, Get, HttpException, Post, Body, UseGuards, Delete, Param, Patch, Put } from '@nestjs/common';
 import { Article } from 'src/article/entities/article.entity';
 import { UserType } from 'src/auth/entities/user.entity';
 import { ArticleService } from 'src/article/services/article/article.service';
@@ -7,6 +7,8 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { NoteArticleDto } from 'src/models/noteArticle';
+import { Commentary } from 'src/article/entities/commentary.entity';
+import { CommentaryDto } from 'src/models/commentary';
 
 /**
  * Handles article operations
@@ -52,5 +54,10 @@ export class ArticleController {
   @Post(':id')
   async gradeArticle(@Param('id') articleId: number, @Body() noteArticle: NoteArticleDto): Promise<Article> {
     return await this.articleService.gradeArticle(articleId, noteArticle);
+  }
+
+  @Put(':id/comment')
+  async commentArticle(@Param('id') articleId: number, @Body() comment: CommentaryDto): Promise<Commentary> {
+    return await this.articleService.commentOnArticle(articleId, comment);
   }
 }

@@ -5,12 +5,12 @@ import { Article } from './entities/article.entity';
 import { ArticleController } from './controllers/article/article.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { NoteArticle } from './entities/noteArticle.entity';
-import { Comment } from './entities/comment.entity';
+import { Commentary } from './entities/commentary.entity';
 
 @Module({
   imports: [
     AuthModule,
-    TypeOrmModule.forFeature([Article, NoteArticle, Comment])
+    TypeOrmModule.forFeature([Article, NoteArticle, Commentary])
   ],
   providers: [ArticleService],
   controllers: [ArticleController]

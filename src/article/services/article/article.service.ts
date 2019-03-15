@@ -7,7 +7,8 @@ import { NewArticleDto } from 'src/models/article';
 import { UserService } from 'src/auth/services/user.service';
 import { NoteArticleDto } from 'src/models/noteArticle';
 import { NoteArticle } from 'src/article/entities/noteArticle.entity';
-import { Comment } from 'src/article/entities/comment.entity';
+import { Commentary } from 'src/article/entities/commentary.entity';
+import { CommentaryDto } from 'src/models/commentary';
 
 /**
  * Handles and manipulates all articles
@@ -20,7 +21,7 @@ export class ArticleService {
   constructor(
     @InjectRepository(Article) private readonly articleRepository: Repository<Article>,
     @InjectRepository(NoteArticle) private readonly noteRepository: Repository<NoteArticle>,
-    @InjectRepository(NoteArticle) private readonly commentRepository: Repository<Comment>,
+    @InjectRepository(Commentary) private readonly commentRepository: Repository<Commentary>,
     private readonly userService: UserService
   ) { }
 
@@ -153,5 +154,22 @@ export class ArticleService {
     newNote.grade = noteArticleDto.grade;
     await this.noteRepository.save(newNote);
     return await this.get(article.id);
+  }
+
+  /**
+   * Adds a comment to an article and resolves with the article
+   * @async
+   * @function commentOnArticle
+   * @param {number} articleId The ID of the article
+   * @param {CommentaryDto} commentDto Commentary to be added to an Article with the given ID
+   * @returns {Promise<Article>}
+   */
+  async commentOnArticle(articleId: number, commentDto: CommentaryDto): Promise<Commentary> {
+    const comment = new Commentary();
+    comment.user = this.userService.getCurrentUser();
+    comment.article = await this.get(articleId);
+    comment.content = commentDto.content;
+    const result = await this.commentRepository.save(comment);
+    return result;
   }
 }

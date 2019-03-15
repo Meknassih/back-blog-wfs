@@ -3,13 +3,11 @@ import { User } from 'src/auth/entities/user.entity';
 import { Article } from './article.entity';
 
 @Entity()
-export class Comment {
+export class Commentary {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(type => User, user => user.comments, {
-    eager: true
-  })
+  @ManyToOne(type => User, user => user.comments)
   user: User;
 
   @ManyToOne(type => Article, article => article.comments)
