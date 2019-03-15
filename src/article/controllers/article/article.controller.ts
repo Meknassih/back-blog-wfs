@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, Post, Body, UseGuards, Delete, Param } from '@nestjs/common';
 import { UserService } from 'src/auth/services/user.service';
 import { ResponseService } from 'src/auth/services/response.service';
 import { Article } from 'src/article/entities/article.entity';
@@ -8,6 +8,7 @@ import { NewArticleDto } from 'src/models/article';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { DeleteResult } from 'typeorm';
 
 /**
  * Handles article operations
@@ -33,5 +34,11 @@ export class ArticleController {
   @Roles(UserType.AUTHOR)
   async createArticle(@Body() article: NewArticleDto): Promise<Article | HttpException> {
     return this.articleService.createArticle(article);
+  }
+
+  @Delete(':id')
+  @Roles(UserType.AUTHOR)
+  async deleteArticle(@Param('id') articleId: number): Promise<boolean> {
+    return (await this.articleService.delete(articleId)).raw.affectedRows >= 1;
   }
 }

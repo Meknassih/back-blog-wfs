@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from 'src/article/entities/article.entity';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { NewArticleDto } from 'src/models/article';
 import { UserService } from 'src/auth/services/user.service';
@@ -29,6 +29,17 @@ export class ArticleService {
   async get(id: number): Promise<Article> {
     const article = await this.articleRepository.findOne(id);
     return article;
+  }
+
+  /**
+   * Resolves with the result of the deletion of an Article with the given ID
+   * @async
+   * @function delete
+   * @param {number} id The ID of the article to be fetched
+   * @returns {Promise<DeleteResult>}
+   */
+  async delete(id: number): Promise<DeleteResult> {
+    return await this.articleRepository.delete(id);
   }
 
   /**
