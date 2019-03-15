@@ -22,10 +22,14 @@ export class Article {
   @Column('varchar')
   title: string;
 
-  @ManyToOne(type => User, user => user.articles)
+  @ManyToOne(type => User, user => user.articles, {
+    eager: true
+  })
   author: User;
 
-  @OneToMany(type => NoteArticle, note => note.article)
+  @OneToMany(type => NoteArticle, note => note.article, {
+    eager: true
+  })
   notes: NoteArticle[];
 
   @Column('varchar')

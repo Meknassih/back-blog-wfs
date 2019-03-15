@@ -21,7 +21,9 @@ export class NoteArticle {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(type => User, user => user.notes)
+  @ManyToOne(type => User, user => user.notes, {
+    eager: true
+  })
   user: User;
 
   @ManyToOne(type => Article, article => article.notes)

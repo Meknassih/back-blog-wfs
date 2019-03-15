@@ -27,8 +27,7 @@ export class ArticleService {
    * @returns {Promise<Article>}
    */
   async get(id: number): Promise<Article> {
-    const article = await this.articleRepository.findOne(id);
-    return article;
+    return await this.articleRepository.findOne(id);
   }
 
   /**

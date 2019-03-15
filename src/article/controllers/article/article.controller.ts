@@ -27,13 +27,18 @@ export class ArticleController {
 
   @Get()
   async getAll(): Promise<Article[] | HttpException> {
-    return this.articleService.getAll();
+    return await this.articleService.getAll();
+  }
+
+  @Get(':id')
+  async getOne(@Param('id') articleId): Promise<Article | HttpException> {
+    return await this.articleService.get(articleId);
   }
 
   @Post()
   @Roles(UserType.AUTHOR)
   async createArticle(@Body() article: NewArticleDto): Promise<Article | HttpException> {
-    return this.articleService.createArticle(article);
+    return await this.articleService.createArticle(article);
   }
 
   @Delete(':id')
