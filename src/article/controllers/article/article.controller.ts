@@ -29,7 +29,7 @@ export class ArticleController {
   }
 
   @Get(':id')
-  async getOne(@Param('id') articleId): Promise<Article | HttpException> {
+  async getOne(@Param('id') articleId: number): Promise<Article | HttpException> {
     return await this.articleService.get(articleId);
   }
 
