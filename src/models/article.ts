@@ -1,5 +1,3 @@
-export class Article { }
-
 export interface NewArticleDto {
   readonly title: string;
   readonly content: string;

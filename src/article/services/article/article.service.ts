@@ -5,6 +5,8 @@ import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { NewArticleDto } from 'src/models/article';
 import { UserService } from 'src/auth/services/user.service';
+import { NoteArticleDto } from 'src/models/noteArticle';
+import { NoteArticle } from 'src/article/entities/noteArticle.entity';
 
 /**
  * Handles and manipulates all articles
@@ -16,6 +18,7 @@ export class ArticleService {
 
   constructor(
     @InjectRepository(Article) private readonly articleRepository: Repository<Article>,
+    @InjectRepository(NoteArticle) private readonly notesRepository: Repository<NoteArticle>,
     private readonly userService: UserService
   ) { }
 
@@ -116,10 +119,37 @@ export class ArticleService {
    * Updates an article and resolves with true if changes were made
    * @async
    * @function updateArticle
+   * @param {number} articleId The ID of the article
    * @param {Partial<NewArticleDto>} articleDto Part of an Article to be updated in the DB
    * @returns {Promise<Article>}
    */
   async updateArticle(articleId: number, articleDto: Partial<NewArticleDto>): Promise<UpdateResult> {
     return await this.articleRepository.update(articleId, articleDto);
+  }
+  /**
+   * Adds a grade or updates an article's grades and resolves with the article
+   * @async
+   * @function gradeArticle
+   * @param {number} articleId The ID of the article
+   * @param {NoteArticleDto} noteArticleDto Grade to be applied to an Article with the given ID
+   * @returns {Promise<Article>}
+   */
+  async gradeArticle(articleId: number, noteArticleDto: Partial<NoteArticleDto>): Promise<Article> {
+    const article = await this.get(articleId);
+    for (const note of article.notes) {
+      if (note.user.id === this.userService.getCurrentUser().id) {
+        // Updating exisiting grade
+        note.grade = noteArticleDto.grade;
+        await this.notesRepository.save(note);
+        return article;
+      }
+    }
+    // Adding new grade
+    const newNote = new NoteArticle();
+    newNote.article = article;
+    newNote.user = this.userService.getCurrentUser();
+    newNote.grade = noteArticleDto.grade;
+    await this.notesRepository.save(newNote);
+    return await this.get(article.id);
   }
 }

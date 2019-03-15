@@ -27,14 +27,14 @@ export class NoteArticle {
   user: User;
 
   @ManyToOne(type => Article, article => article.notes)
-  article: User;
+  article: Article;
 
   @Column({
     type: 'enum',
     enum: ArticleGrade,
     default: ArticleGrade.NOGRADE
   })
-  status: ArticleGrade;
+  grade: ArticleGrade;
 
   @CreateDateColumn()
   created: Date;

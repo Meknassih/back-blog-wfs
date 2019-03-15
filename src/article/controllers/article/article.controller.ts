@@ -9,6 +9,8 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { DeleteResult } from 'typeorm';
+import { NoteArticle } from 'src/article/entities/noteArticle.entity';
+import { NoteArticleDto } from 'src/models/noteArticle';
 
 /**
  * Handles article operations
@@ -51,5 +53,10 @@ export class ArticleController {
   @Roles(UserType.AUTHOR)
   async editArticle(@Param('id') articleId: number, @Body() articlePart: Partial<NewArticleDto>): Promise<boolean> {
     return (await this.articleService.updateArticle(articleId, articlePart)).raw.affectedRows >= 1;
+  }
+
+  @Post(':id')
+  async gradeArticle(@Param('id') articleId: number, @Body() noteArticle: NoteArticleDto): Promise<Article> {
+    return await this.articleService.gradeArticle(articleId, noteArticle);
   }
 }
