@@ -19,6 +19,11 @@ export class CommentController {
     return (await this.commentService.delete(id)).raw.affectedRows >= 1;
   }
 
+  @Put('article/:id')
+  async commentArticle(@Param('id') articleId: number, @Body() comment: CommentaryDto): Promise<Commentary> {
+    return await this.commentService.addComment(articleId, comment);
+  }
+
   @Put('reply/:id')
   @Roles(UserType.AUTHOR)
   async replyToComment(@Param('id') parentId: number, @Body() comment: CommentaryDto): Promise<Commentary> {

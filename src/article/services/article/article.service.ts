@@ -155,21 +155,4 @@ export class ArticleService {
     await this.noteRepository.save(newNote);
     return await this.get(article.id);
   }
-
-  /**
-   * Adds a comment to an article and resolves with the article
-   * @async
-   * @function commentOnArticle
-   * @param {number} articleId The ID of the article
-   * @param {CommentaryDto} commentDto Commentary to be added to an Article with the given ID
-   * @returns {Promise<Article>}
-   */ //TODO: move this to commentService
-  async commentOnArticle(articleId: number, commentDto: CommentaryDto): Promise<Commentary> {
-    const comment = new Commentary();
-    comment.user = this.userService.getCurrentUser();
-    comment.article = await this.get(articleId);
-    comment.content = commentDto.content;
-    const result = await this.commentRepository.save(comment);
-    return result;
-  }
 }

@@ -4,12 +4,14 @@ import { Commentary } from 'src/article/entities/commentary.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/auth/services/user.service';
 import { CommentaryDto } from 'src/models/commentary';
+import { ArticleService } from '../article/article.service';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Commentary) private readonly commentRepository: Repository<Commentary>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly articleService: ArticleService
   ) { }
 
   /**
@@ -55,5 +57,22 @@ export class CommentService {
     comment.parent = parent;
     comment.content = commentDto.content;
     return await this.commentRepository.save(comment);
+  }
+
+  /**
+   * Adds a comment to an article and resolves with the comment
+   * @async
+   * @function addComment
+   * @param {number} articleId The ID of the article
+   * @param {CommentaryDto} commentDto Commentary to be added to an Article with the given ID
+   * @returns {Promise<Commentary>}
+   */
+  async addComment(articleId: number, commentDto: CommentaryDto): Promise<Commentary> {
+    const comment = new Commentary();
+    comment.user = this.userService.getCurrentUser();
+    comment.article = await this.articleService.get(articleId);
+    comment.content = commentDto.content;
+    const result = await this.commentRepository.save(comment);
+    return result;
   }
 }
