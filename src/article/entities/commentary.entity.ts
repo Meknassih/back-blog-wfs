@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { Article } from './article.entity';
 
@@ -12,6 +12,10 @@ export class Commentary {
 
   @ManyToOne(type => Article, article => article.comments)
   article: Article;
+
+  @OneToOne(type => Commentary)
+  @JoinColumn()
+  parent: Commentary;
 
   @Column('varchar')
   content: string;

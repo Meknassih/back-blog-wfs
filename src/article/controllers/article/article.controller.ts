@@ -56,7 +56,7 @@ export class ArticleController {
     return await this.articleService.gradeArticle(articleId, noteArticle);
   }
 
-  @Put(':id/comment')
+  @Put(':id/comment') //TODO: move this to commentController
   async commentArticle(@Param('id') articleId: number, @Body() comment: CommentaryDto): Promise<Commentary> {
     return await this.articleService.commentOnArticle(articleId, comment);
   }
