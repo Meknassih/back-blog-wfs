@@ -43,6 +43,34 @@ export class UserService {
   }
 
   /**
+   * Resolves with the new User
+   * @async
+   * @function signupUser
+   * @param  {UserDto} user The user to sign up
+   * @returns {Promise<(User | HttpException)>}
+   */
+  async signupUser(userDto: UserDto): Promise<User | HttpException> {
+    const user = new User();
+    if (!userDto.username || !(/\b[a-zA-Z0-9]{4,}/.test(userDto.username)))
+      this.responseService.invalidSignup('username');
+    else if (!userDto.password || !(/\b[a-zA-Z0-9]{4,}/.test(userDto.password)))
+      this.responseService.invalidSignup('password');
+    else if (!userDto.firstname || !(/\b[a-zA-Z]{1,}/.test(userDto.firstname)))
+      this.responseService.invalidSignup('firstname');
+    else if (!userDto.lastname || !(/\b[a-zA-Z]{1,}/.test(userDto.lastname)))
+      this.responseService.invalidSignup('lastname');
+    else if (!userDto.email || !(/\w+@\w+\.[a-zA-Z]+/.test(userDto.email)))
+      this.responseService.invalidSignup('email');
+    else {
+      Object.getOwnPropertyNames(userDto).forEach(prop => {
+        user[prop] = userDto[prop];
+      });
+      user.avatar = new Buffer('');
+      return await this.userRepository.save(user);
+    }
+  }
+
+  /**
    * Refreshes the current User in memory from the DB
    * @async
    * @function refreshCurrentUser
@@ -87,7 +115,6 @@ export class UserService {
     });
     return this.currentUser = await this.userRepository.save(user);
   }
-
 
   /**
    * Updates the avatar of a User and resolves with the new instance

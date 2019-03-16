@@ -1,5 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
+const signupFieldMap = {
+  username: 'nom d\'utilisateur',
+  password: 'mot de passe',
+  firstname: 'prénom',
+  lastname: 'nom de famille',
+  email: 'e-mail'
+};
+
 /**
  * Throws exceptions
  * @constructs ResponseController
@@ -99,6 +107,18 @@ export class ResponseService {
     throw new HttpException({
       status: HttpStatus.OK,
       error: 'Ce compte utilisateur a été désactivé par les administrateurs.',
+    }, 200);
+  }
+
+  /**
+   * Throws the exception for bad form value during signup
+   * @function invalidSignup
+   * @returns {HttpException}
+   */
+  invalidSignup(field: string): HttpException {
+    throw new HttpException({
+      status: HttpStatus.OK,
+      error: 'Inscription échouée car le champ ' + signupFieldMap[field] + ' a mal été renseigné.',
     }, 200);
   }
 }
