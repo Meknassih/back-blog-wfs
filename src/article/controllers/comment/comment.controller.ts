@@ -6,12 +6,14 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserType } from 'src/auth/entities/user.entity';
 import { CommentaryDto } from 'src/models/commentary';
 import { Commentary } from 'src/article/entities/commentary.entity';
+import { ApiUseTags } from '@nestjs/swagger';
 
 /**
  * Handles comment operations
  * @constructs CommentController
  * @param {CommentService} commentService
  */
+@ApiUseTags('comment')
 @Controller('comment')
 @UseGuards(AuthGuard, RoleGuard)
 export class CommentController {

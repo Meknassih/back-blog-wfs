@@ -8,6 +8,7 @@ import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { NoteArticleDto } from 'src/models/noteArticle';
 import { UserService } from 'src/auth/services/user.service';
+import { ApiUseTags } from '@nestjs/swagger';
 
 /**
  * Handles article operations
@@ -15,6 +16,7 @@ import { UserService } from 'src/auth/services/user.service';
  * @param {UserService} userService
  * @param {ResponseService} responseService
  */
+@ApiUseTags('article')
 @Controller('article')
 @UseGuards(AuthGuard, RoleGuard)
 export class ArticleController {

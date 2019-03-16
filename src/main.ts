@@ -9,7 +9,6 @@ async function bootstrap() {
     .setTitle('Blog back-end')
     .setDescription('API for the blog of Web Full Stack course')
     .setVersion('1.0')
-    .addTag('blog')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

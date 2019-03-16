@@ -1,4 +1,16 @@
-import { Controller, Get, HttpException, UseGuards, Delete, Body, Patch, UseInterceptors, FileInterceptor, UploadedFile, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  UseGuards,
+  Delete,
+  Body,
+  Patch,
+  UseInterceptors,
+  FileInterceptor,
+  UploadedFile,
+  Param
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ResponseService } from '../services/response.service';
 import { User, UserType } from '../entities/user.entity';
@@ -7,6 +19,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { RoleGuard } from '../guards/role.guard';
 import { UserDto } from 'src/models/user';
 import { FileDto } from 'src/models/file-dto';
+import { ApiUseTags } from '@nestjs/swagger';
 
 /**
  * Handles user operations
@@ -14,6 +27,7 @@ import { FileDto } from 'src/models/file-dto';
  * @param {UserService} userService
  * @param {ResponseService} responseService
  */
+@ApiUseTags('user')
 @Controller('user')
 @UseGuards(AuthGuard, RoleGuard)
 export class UserController {

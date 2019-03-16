@@ -1,8 +1,9 @@
 import { Controller, Post, Body, Get, HttpException } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { UserDto, UserLoginDto } from 'src/models/user';
+import { UserLoginDto } from 'src/models/user';
 import { User } from '../entities/user.entity';
 import { ResponseService } from '../services/response.service';
+import { ApiUseTags } from '@nestjs/swagger';
 
 /**
  * Handles login operations
@@ -10,6 +11,7 @@ import { ResponseService } from '../services/response.service';
  * @param {UserService} userService
  * @param {ResponseService} responseService
  */
+@ApiUseTags('login')
 @Controller('login')
 export class LoginController {
   constructor(
