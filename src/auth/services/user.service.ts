@@ -79,6 +79,7 @@ export class UserService {
     return this.currentUser = await this.userRepository.save(user);
   }
 
+
   /**
    * Updates the avatar of a User and resolves with the new instance
    * @async
@@ -91,6 +92,20 @@ export class UserService {
     // console.log(avatar);
     user.avatar = avatar;
     return this.currentUser = await this.userRepository.save(user);
+  }
+
+  /**
+   * Updates the email of a User and resolves with the new instance
+   * @async
+   * @function updateEmail
+   * @param {number} userId The target user's ID
+   * @param {string} email The new email to be set
+   * @returns {Promise<User>}
+   */
+  async updateEmail(userId: number, email: string): Promise<User> {
+    const user = await this.userRepository.findOne(userId);
+    user.email = email;
+    return await this.userRepository.save(user);
   }
 
   /**

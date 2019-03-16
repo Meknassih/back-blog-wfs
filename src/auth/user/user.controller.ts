@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, UseGuards, Delete, Body, Patch, UseInterceptors, FileInterceptor, UploadedFile } from '@nestjs/common';
+import { Controller, Get, HttpException, UseGuards, Delete, Body, Patch, UseInterceptors, FileInterceptor, UploadedFile, Param } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ResponseService } from '../services/response.service';
 import { User, UserType } from '../entities/user.entity';
@@ -63,6 +63,19 @@ export class UserController {
   @UseInterceptors(FileInterceptor('avatar'))
   async updateCurrentUserAvatar(@UploadedFile() { buffer }: FileDto): Promise<any> {
     return await this.userService.updateCurrentUserAvatar(buffer);
+  }
+
+  /**
+   * Updates a user's email with the new data
+   * @function updateUserEmail
+   * @param {number} userId The target user's ID
+   * @param {string} email The new email to be set
+   * @returns {Promise<User>}
+   */
+  @Patch(':id/email')
+  @Roles(UserType.ADMIN)
+  async updateUserEmail(@Param('id') userId: number, @Body('email') email: string): Promise<User> {
+    return await this.userService.updateEmail(userId, email);
   }
 
   /**
