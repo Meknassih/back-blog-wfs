@@ -105,3 +105,6 @@ Thumbs.db
 
 # MongoDB
 db/
+
+# Files uploaded
+upload/*

@@ -26,10 +26,6 @@ export class LoginController {
    */
   @Post()
   async login(@Body() user: UserLoginDto): Promise<User | HttpException> {
-    const userFound = await this.userService.loginUser(user);
-    if (userFound)
-      return userFound;
-    else
-      return this.responseService.badLogin();
+    return await this.userService.loginUser(user);
   }
 }

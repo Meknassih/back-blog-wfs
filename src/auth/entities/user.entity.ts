@@ -51,6 +51,15 @@ export class User {
   @OneToMany(type => Commentary, comment => comment.user)
   comments: Commentary[];
 
+  @Column('blob')
+  avatar: Buffer;
+
+  @Column({
+    type: 'bool',
+    default: false
+  })
+  disabled: boolean;
+
   @CreateDateColumn()
   created: Date;
 

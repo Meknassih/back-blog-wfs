@@ -1,13 +1,9 @@
-export class UserDto {
+export interface UserDto {
   readonly username: string;
   readonly password: string;
   readonly email: string;
-
-  constructor(attributes: UserAttributes) {
-    this.username = attributes.username;
-    this.password = attributes.password;
-    this.email = attributes.email;
-  }
+  readonly firstname: string;
+  readonly lastname: string;
 }
 
 export class UserLoginDto {
