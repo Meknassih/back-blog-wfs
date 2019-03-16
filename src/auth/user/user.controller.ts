@@ -1,10 +1,11 @@
-import { Controller, Get, HttpException, UseGuards, Delete, Body } from '@nestjs/common';
+import { Controller, Get, HttpException, UseGuards, Delete, Body, Patch } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ResponseService } from '../services/response.service';
 import { User, UserType } from '../entities/user.entity';
 import { AuthGuard } from '../guards/auth.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { RoleGuard } from '../guards/role.guard';
+import { UserDto } from 'src/models/user';
 
 /**
  * Handles user operations
@@ -40,6 +41,16 @@ export class UserController {
   @Roles(UserType.ADMIN)
   async all(): Promise<User[]> {
     return this.userService.all();
+  }
+
+  /**
+   * Updates the current user with the new data
+   * @function updateCurrentUser
+   * @returns {(User|undefined)}
+   */
+  @Patch()
+  async updateCurrentUser(@Body() userPart: Partial<UserDto>): Promise<User> {
+    return await this.userService.updateCurrentUser(userPart);
   }
 
   /**

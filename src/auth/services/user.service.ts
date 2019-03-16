@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { User } from '../entities/user.entity';
-import { UserLoginDto } from 'src/models/user';
+import { UserLoginDto, UserDto } from 'src/models/user';
 
 /**
  * Handles and manipulates all user data
@@ -38,6 +38,16 @@ export class UserService {
   }
 
   /**
+   * Refreshes the current User in memory from the DB
+   * @async
+   * @function refreshCurrentUser
+   * @returns {Promise<void>}
+   */
+  async refreshCurrentUser(): Promise<void> {
+    this.currentUser = await this.userRepository.findOne(this.currentUser.id);
+  }
+
+  /**
    * Returns the data of the current user or undefined
    * @function getCurrentUser
    * @returns {(User|undefined)}
@@ -52,6 +62,21 @@ export class UserService {
    */
   async all(): Promise<User[]> {
     return await this.userRepository.find();
+  }
+
+  /**
+   * Updates the attributes of a User and resolves with the new instance
+   * @async
+   * @function updateCurrentUser
+   * @param {Partial<UserDto>} userPart Attributes of user to be updated
+   * @returns {Promise<DeleteResult>}
+   */
+  async updateCurrentUser(userPart: Partial<UserDto>): Promise<User> {
+    const user = this.getCurrentUser();
+    Object.getOwnPropertyNames(userPart).forEach(prop => {
+      user[prop] = userPart[prop];
+    });
+    return this.currentUser = await this.userRepository.save(user);
   }
 
   /**
