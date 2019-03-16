@@ -79,6 +79,18 @@ export class ResponseService {
   }
 
   /**
+   * Throws the exception of a request that cannot be called on target user
+   * @function noSuchArticle
+   * @returns {HttpException}
+   */
+  noSuchArticle(): HttpException {
+    throw new HttpException({
+      status: HttpStatus.BAD_REQUEST,
+      error: 'L\'article ciblé n\'existe pas.',
+    }, 400);
+  }
+
+  /**
    * Throws the exception of a request to log a user with a disabled account
    * @function userAccountDisabled
    * @returns {HttpException}

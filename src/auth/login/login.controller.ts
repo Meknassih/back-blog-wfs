@@ -3,7 +3,7 @@ import { UserService } from '../services/user.service';
 import { UserLoginDto } from 'src/models/user';
 import { User } from '../entities/user.entity';
 import { ResponseService } from '../services/response.service';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiOkResponse } from '@nestjs/swagger';
 
 /**
  * Handles login operations
@@ -26,6 +26,7 @@ export class LoginController {
    * @param {UserLoginDto} user user data to check against the DB
    * @returns {Promise<(User|HttpException)>} returns the user logged in or an exception if authentication fails
    */
+  @ApiOkResponse({ description: 'Connexion impossible, vérifiez vos identifiants.' })
   @Post()
   async login(@Body() user: UserLoginDto): Promise<User | HttpException> {
     return await this.userService.loginUser(user);

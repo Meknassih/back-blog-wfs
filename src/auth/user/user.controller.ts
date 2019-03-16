@@ -19,7 +19,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { RoleGuard } from '../guards/role.guard';
 import { UserDto } from 'src/models/user';
 import { FileDto } from 'src/models/file-dto';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiConsumes, ApiImplicitFile, ApiResponse, ApiOkResponse } from '@nestjs/swagger';
 
 /**
  * Handles user operations
@@ -28,6 +28,7 @@ import { ApiUseTags } from '@nestjs/swagger';
  * @param {ResponseService} responseService
  */
 @ApiUseTags('user')
+@ApiResponse({ status: 401, description: 'Cette requête nécessite d\'être connecté au préalable.' })
 @Controller('user')
 @UseGuards(AuthGuard, RoleGuard)
 export class UserController {
@@ -39,10 +40,10 @@ export class UserController {
   /**
    * Returns the current user
    * @function getUser
-   * @returns {(User|undefined)}
+   * @returns {User}
    */
   @Get()
-  getUser(): User | HttpException {
+  getUser(): User {
     return this.userService.getCurrentUser();
   }
 
@@ -85,9 +86,11 @@ export class UserController {
    * @function updateCurrentUserAvatar
    * @returns {Promise<User>}
    */
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'avatar', required: true, description: 'Picture to set as avatar' })
   @Patch('avatar')
   @UseInterceptors(FileInterceptor('avatar'))
-  async updateCurrentUserAvatar(@UploadedFile() { buffer }: FileDto): Promise<any> {
+  async updateCurrentUserAvatar(@UploadedFile() { buffer }: FileDto): Promise<User> {
     return await this.userService.updateCurrentUserAvatar(buffer);
   }
 
@@ -98,6 +101,7 @@ export class UserController {
    * @param {string} email The new email to be set
    * @returns {Promise<User>}
    */
+  @ApiResponse({ status: 401, description: 'Cette requête nécessite des droits plus élevés.' })
   @Patch(':id/email')
   @Roles(UserType.ADMIN)
   async updateUserEmail(@Param('id') userId: number, @Body('email') email: string): Promise<User> {
@@ -110,6 +114,8 @@ export class UserController {
    * @param {number} userId The target user's ID
    * @returns {Promise<User | HttpException>}
    */
+  @ApiResponse({ status: 401, description: 'Cette requête nécessite des droits plus élevés.' })
+  @ApiResponse({ status: 401, description: 'Cette requête ne peut pas être réalisée sur l\'utilisateur cible.' })
   @Patch(':id/disable')
   @Roles(UserType.ADMIN)
   async disableUser(@Param('id') userId: number): Promise<User | HttpException> {
@@ -122,6 +128,8 @@ export class UserController {
    * @param {number} userId The target user's ID
    * @returns {Promise<User | HttpException>}
    */
+  @ApiResponse({ status: 401, description: 'Cette requête nécessite des droits plus élevés.' })
+  @ApiResponse({ status: 401, description: 'Cette requête ne peut pas être réalisée sur l\'utilisateur cible.' })
   @Patch(':id/enable')
   @Roles(UserType.ADMIN)
   async enableUser(@Param('id') userId: number): Promise<User | HttpException> {
@@ -135,6 +143,8 @@ export class UserController {
    * @param {UserType} role The new role to be set
    * @returns {Promise<User>}
    */
+  @ApiResponse({ status: 401, description: 'Cette requête nécessite des droits plus élevés.' })
+  @ApiResponse({ status: 401, description: 'Cette requête ne peut pas être réalisée sur l\'utilisateur cible.' })
   @Patch(':id/role')
   @Roles(UserType.ADMIN)
   async updateUserRole(@Param('id') userId: number, @Body('role') role: UserType): Promise<User | HttpException> {
@@ -147,6 +157,9 @@ export class UserController {
    * @function delete
    * @returns {Promise<boolean>}
    */
+  @ApiResponse({ status: 401, description: 'Cette requête nécessite des droits plus élevés.' })
+  @ApiResponse({ status: 400, description: 'La suppression n\'a pas réussi.' })
+  @ApiOkResponse({ description: 'Suppression effectuée avec succès.' })
   @Delete()
   @Roles(UserType.ADMIN)
   async delete(@Body('username') username: string): Promise<HttpException> {

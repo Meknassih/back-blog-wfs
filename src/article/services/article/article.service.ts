@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from 'src/article/entities/article.entity';
 import { Repository, DeleteResult, UpdateResult, FindConditions } from 'typeorm';
@@ -9,6 +9,7 @@ import { NoteArticleDto } from 'src/models/noteArticle';
 import { NoteArticle } from 'src/article/entities/noteArticle.entity';
 import { Commentary } from 'src/article/entities/commentary.entity';
 import { CommentaryDto } from 'src/models/commentary';
+import { ResponseService } from 'src/auth/services/response.service';
 
 /**
  * Handles and manipulates all articles
@@ -21,8 +22,8 @@ export class ArticleService {
   constructor(
     @InjectRepository(Article) private readonly articleRepository: Repository<Article>,
     @InjectRepository(NoteArticle) private readonly noteRepository: Repository<NoteArticle>,
-    @InjectRepository(Commentary) private readonly commentRepository: Repository<Commentary>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly responseService: ResponseService
   ) { }
 
   /**
@@ -40,7 +41,7 @@ export class ArticleService {
    * Resolves with the result of the deletion of an Article with the given ID
    * @async
    * @function delete
-   * @param {number} id The ID of the article to be fetched
+   * @param {number} id The ID of the article to be deleted
    * @returns {Promise<DeleteResult>}
    */
   async delete(id: number): Promise<DeleteResult> {
@@ -137,10 +138,12 @@ export class ArticleService {
    * @function gradeArticle
    * @param {number} articleId The ID of the article
    * @param {NoteArticleDto} noteArticleDto Grade to be applied to an Article with the given ID
-   * @returns {Promise<Article>}
+   * @returns {Promise<Article | HttpException>}
    */
-  async gradeArticle(articleId: number, noteArticleDto: Partial<NoteArticleDto>): Promise<Article> {
+  async gradeArticle(articleId: number, noteArticleDto: Partial<NoteArticleDto>): Promise<Article | HttpException> {
     const article = await this.get(articleId);
+    if (!article)
+      return this.responseService.noSuchArticle();
     for (const note of article.notes) {
       if (note.user.id === this.userService.getCurrentUser().id) {
         // Updating exisiting grade
@@ -162,10 +165,12 @@ export class ArticleService {
    * Sets an Article to be hidden or not to the public
    * @param {number} articleId The target Article's ID
    * @param {boolean} hidden Hides/shows the Article when true/false
-   * @returns {Promise<Article>}
+   * @returns {Promise<Article | HttpException>}
    */
-  async setHidden(articleId: number, hidden: boolean): Promise<Article> {
+  async setHidden(articleId: number, hidden: boolean): Promise<Article | HttpException> {
     const article = await this.get(articleId);
+    if (!article)
+      return this.responseService.noSuchArticle();
     article.hidden = hidden;
     return await this.articleRepository.save(article);
   }
