@@ -155,4 +155,16 @@ export class ArticleService {
     await this.noteRepository.save(newNote);
     return await this.get(article.id);
   }
+
+  /**
+   * Sets an Article to be hidden or not to the public
+   * @param {number} articleId The target Article's ID
+   * @param {boolean} hidden Hides/shows the Article when true/false
+   * @returns {Promise<Article>}
+   */
+  async setHidden(articleId: number, hidden: boolean): Promise<Article> {
+    const article = await this.get(articleId);
+    article.hidden = hidden;
+    return await this.articleRepository.save(article);
+  }
 }

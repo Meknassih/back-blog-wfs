@@ -57,6 +57,12 @@ export class Article {
   @Column('mediumblob')
   picture: Buffer;
 
+  @Column({
+    type: 'boolean',
+    default: false
+  })
+  hidden: boolean;
+
   @CreateDateColumn()
   created: Date;
 

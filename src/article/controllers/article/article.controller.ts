@@ -7,8 +7,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { NoteArticleDto } from 'src/models/noteArticle';
-import { Commentary } from 'src/article/entities/commentary.entity';
-import { CommentaryDto } from 'src/models/commentary';
+import { UserService } from 'src/auth/services/user.service';
 
 /**
  * Handles article operations
@@ -55,6 +54,18 @@ export class ArticleController {
   @Roles(UserType.AUTHOR)
   async editArticle(@Param('id') articleId: number, @Body() articlePart: Partial<NewArticleDto>): Promise<boolean> {
     return (await this.articleService.updateArticle(articleId, articlePart)).raw.affectedRows >= 1;
+  }
+
+  @Patch(':id/hide')
+  @Roles(UserType.ADMIN)
+  async hideArticle(@Param('id') articleId: number): Promise<Article> {
+    return await this.articleService.setHidden(articleId, true);
+  }
+
+  @Patch(':id/unhide')
+  @Roles(UserType.ADMIN)
+  async unhideArticle(@Param('id') articleId: number): Promise<Article> {
+    return await this.articleService.setHidden(articleId, false);
   }
 
   @Post(':id')
