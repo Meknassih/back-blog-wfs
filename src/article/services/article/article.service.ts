@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article, ArticleStatus } from 'src/article/entities/article.entity';
-import { Repository, DeleteResult, UpdateResult } from 'typeorm';
+import { Repository, DeleteResult, UpdateResult, FindConditions } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { NewArticleDto } from 'src/models/article';
 import { UserService } from 'src/auth/services/user.service';
@@ -67,7 +67,7 @@ export class ArticleService {
    */
   async set(title: string, author: User, content: string, status?: ArticleStatus): Promise<Article>;
   async set(articleOrTitle: string | Article, author?: User, content?: string, status?: ArticleStatus): Promise<Article> {
-    let result;
+    let result: Article;
 
     if (articleOrTitle instanceof Article)
       result = await this.articleRepository.save(articleOrTitle);
@@ -85,19 +85,21 @@ export class ArticleService {
   }
 
   /**
-   * Resolves with all the Articles
+   * Resolves with all the hidden Articles if Admin, or own hidden if Author
    * @async
    * @function getAll
-   * @param {id} ownedByUserId Specify a user ID to restrict to articles owned only by a user
+   * @param {GetAllOptions} options Can be used to restrict the articles
    * @returns {Promise<Article[]>}
    */
-  async getAll(ownedByUser?: User): Promise<Article[]> {
-    let articles: Article[];
-    if (ownedByUser)
-      articles = await this.articleRepository.find({ where: { user: ownedByUser } });
-    else
-      articles = await this.articleRepository.find();
-    return articles;
+  async getAll(options?: GetAllOptions): Promise<Article[]> {
+    const conditions: FindConditions<Article> = {};
+    if (options) {
+      if (options.hiddenOnly !== undefined)
+        conditions.hidden = options.hiddenOnly;
+      if (options.ownedByUser !== undefined)
+        conditions.author = options.ownedByUser;
+    }
+    return await this.articleRepository.find({ where: conditions });
   }
 
   /**
@@ -167,4 +169,9 @@ export class ArticleService {
     article.hidden = hidden;
     return await this.articleRepository.save(article);
   }
+}
+
+export interface GetAllOptions {
+  hiddenOnly?: boolean;
+  ownedByUser?: User;
 }

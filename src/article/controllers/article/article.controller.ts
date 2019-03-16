@@ -28,9 +28,20 @@ export class ArticleController {
     return await this.articleService.getAll();
   }
 
-  @Get('listmine')
+  @Get('hidden')
+  async getAllHidden(): Promise<Article[] | HttpException> {
+    if (this.userService.getCurrentUser().type === UserType.ADMIN)
+      return await this.articleService.getAll({ hiddenOnly: true });
+    else if (this.userService.getCurrentUser().type === UserType.AUTHOR)
+      return await this.articleService.getAll({
+        hiddenOnly: true,
+        ownedByUser: this.userService.getCurrentUser()
+      });
+  }
+
+  @Get('mine')
   async getAllMine(): Promise<Article[] | HttpException> {
-    return await this.articleService.getAll(this.userService.getCurrentUser());
+    return await this.articleService.getAll({ ownedByUser: this.userService.getCurrentUser() });
   }
 
   @Get(':id')
