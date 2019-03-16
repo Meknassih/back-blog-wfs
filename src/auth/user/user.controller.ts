@@ -82,11 +82,11 @@ export class UserController {
    * Disables a user's account
    * @function disableUser
    * @param {number} userId The target user's ID
-   * @returns {Promise<User>}
+   * @returns {Promise<User | HttpException>}
    */
   @Patch(':id/disable')
   @Roles(UserType.ADMIN)
-  async disableUser(@Param('id') userId: number): Promise<User> {
+  async disableUser(@Param('id') userId: number): Promise<User | HttpException> {
     return await this.userService.setDisabled(userId, true);
   }
 
@@ -94,12 +94,25 @@ export class UserController {
    * Enables a user's account
    * @function enableUser
    * @param {number} userId The target user's ID
-   * @returns {Promise<User>}
+   * @returns {Promise<User | HttpException>}
    */
   @Patch(':id/enable')
   @Roles(UserType.ADMIN)
-  async enableUser(@Param('id') userId: number): Promise<User> {
+  async enableUser(@Param('id') userId: number): Promise<User | HttpException> {
     return await this.userService.setDisabled(userId, false);
+  }
+
+  /**
+   * Updates a user's role with the new one
+   * @function updateUserRole
+   * @param {number} userId The target user's ID
+   * @param {UserType} role The new role to be set
+   * @returns {Promise<User>}
+   */
+  @Patch(':id/role')
+  @Roles(UserType.ADMIN)
+  async updateUserRole(@Param('id') userId: number, @Body('role') role: UserType): Promise<User | HttpException> {
+    return await this.userService.updateRole(userId, role);
   }
 
   /**

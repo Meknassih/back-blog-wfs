@@ -65,4 +65,16 @@ export class ResponseService {
       error: 'La suppression n\'a pas réussi.',
     }, 400);
   }
+
+  /**
+   * Throws the exception of a request that cannot be called on target user
+   * @function protectedUser
+   * @returns {HttpException}
+   */
+  protectedUser(): HttpException {
+    throw new HttpException({
+      status: HttpStatus.BAD_REQUEST,
+      error: 'Cette requête ne peut pas être réalisée sur l\'utilisateur cible.',
+    }, 400);
+  }
 }
