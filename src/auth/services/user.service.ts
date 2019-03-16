@@ -22,22 +22,24 @@ export class UserService {
   ) { }
 
   /**
-   * Resolves with User or undefined
+   * Resolves with User
    * @async
    * @function loginUser
    * @param  {UserLoginDto} user The user to verify credentials for
-   * @returns {Promise<(User|undefined)>}
+   * @returns {Promise<(User | HttpException)>}
    */
-  async loginUser(user: UserLoginDto): Promise<User | undefined> {
+  async loginUser(user: UserLoginDto): Promise<User | HttpException> {
     const userFound = await this.userRepository.find(
       {
         where: user
       });
-    //TODO: check if disabled
-    if (userFound[0])
-      this.currentUser = userFound[0];
-
-    return this.currentUser;
+    if (userFound[0]) {
+      if (userFound[0].disabled)
+        return this.responseService.userAccountDisabled();
+      else
+        return this.currentUser = userFound[0];
+    } else
+      return this.responseService.badLogin();
   }
 
   /**
