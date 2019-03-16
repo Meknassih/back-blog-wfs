@@ -8,8 +8,6 @@ import { NewArticleDto } from 'src/models/article';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { DeleteResult } from 'typeorm';
-import { NoteArticle } from 'src/article/entities/noteArticle.entity';
 import { NoteArticleDto } from 'src/models/noteArticle';
 
 /**
@@ -23,13 +21,17 @@ import { NoteArticleDto } from 'src/models/noteArticle';
 export class ArticleController {
   constructor(
     private readonly articleService: ArticleService,
-    private readonly userService: UserService,
-    private readonly responseService: ResponseService
+    private readonly userService: UserService
   ) { }
 
   @Get()
   async getAll(): Promise<Article[] | HttpException> {
     return await this.articleService.getAll();
+  }
+
+  @Get('listmine')
+  async getAllMine(): Promise<Article[] | HttpException> {
+    return await this.articleService.getAll(this.userService.getCurrentUser());
   }
 
   @Get(':id')
