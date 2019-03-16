@@ -1,4 +1,6 @@
+import { ApiModelProperty } from '@nestjs/swagger';
 
-export interface CommentaryDto {
+export class CommentaryDto {
+  @ApiModelProperty()
   readonly content: string;
 }
