@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Article } from 'src/article/entities/article.entity';
 import { NoteArticle } from 'src/article/entities/noteArticle.entity';
+import { Commentary } from 'src/article/entities/commentary.entity';
 
 /**
  * Enum for user types. Higher values gives more permissions.
@@ -22,7 +23,7 @@ export class User {
   @Column('varchar')
   username: string;
 
-  @Column('varchar')
+  @Column('varchar', { select: false })
   password: string;
 
   @Column('varchar')
@@ -46,6 +47,9 @@ export class User {
 
   @OneToMany(type => NoteArticle, note => note.user)
   notes: NoteArticle[];
+
+  @OneToMany(type => Commentary, comment => comment.user)
+  comments: Commentary[];
 
   @CreateDateColumn()
   created: Date;

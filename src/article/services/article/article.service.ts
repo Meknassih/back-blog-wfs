@@ -7,6 +7,8 @@ import { NewArticleDto } from 'src/models/article';
 import { UserService } from 'src/auth/services/user.service';
 import { NoteArticleDto } from 'src/models/noteArticle';
 import { NoteArticle } from 'src/article/entities/noteArticle.entity';
+import { Commentary } from 'src/article/entities/commentary.entity';
+import { CommentaryDto } from 'src/models/commentary';
 
 /**
  * Handles and manipulates all articles
@@ -18,7 +20,8 @@ export class ArticleService {
 
   constructor(
     @InjectRepository(Article) private readonly articleRepository: Repository<Article>,
-    @InjectRepository(NoteArticle) private readonly notesRepository: Repository<NoteArticle>,
+    @InjectRepository(NoteArticle) private readonly noteRepository: Repository<NoteArticle>,
+    @InjectRepository(Commentary) private readonly commentRepository: Repository<Commentary>,
     private readonly userService: UserService
   ) { }
 
@@ -140,7 +143,7 @@ export class ArticleService {
       if (note.user.id === this.userService.getCurrentUser().id) {
         // Updating exisiting grade
         note.grade = noteArticleDto.grade;
-        await this.notesRepository.save(note);
+        await this.noteRepository.save(note);
         return article;
       }
     }
@@ -149,7 +152,7 @@ export class ArticleService {
     newNote.article = article;
     newNote.user = this.userService.getCurrentUser();
     newNote.grade = noteArticleDto.grade;
-    await this.notesRepository.save(newNote);
+    await this.noteRepository.save(newNote);
     return await this.get(article.id);
   }
 }
