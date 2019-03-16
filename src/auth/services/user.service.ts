@@ -63,10 +63,14 @@ export class UserService {
    * Resolves with an array of Users
    * @async
    * @function all
+   * @param {boolean} sortByRole Users are sorted from most privileges to lowest if true
    * @returns {Promise<User[]>}
    */
-  async all(): Promise<User[]> {
-    return await this.userRepository.find();
+  async all(sortByRole?: boolean): Promise<User[]> {
+    if (sortByRole)
+      return await this.userRepository.find({ order: { type: 'DESC' } });
+    else
+      return await this.userRepository.find();
   }
 
   /**

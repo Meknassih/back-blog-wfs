@@ -45,6 +45,18 @@ export class UserController {
   }
 
   /**
+   * Returns all the existing users
+   * @async
+   * @function all
+   * @returns {Promise<User[]>}
+   */
+  @Get('allsorted')
+  @Roles(UserType.ADMIN)
+  async allSorted(): Promise<User[]> {
+    return this.userService.all(true);
+  }
+
+  /**
    * Updates the current user with the new data
    * @function updateCurrentUser
    * @returns {Promise<User>}
