@@ -109,6 +109,20 @@ export class UserService {
   }
 
   /**
+   * Updates the email of a User and resolves with the new instance
+   * @async
+   * @function setDisabled
+   * @param {number} userId The target user's ID
+   * @param {boolean} disable Disables/enables the user account when true/false
+   * @returns {Promise<User>}
+   */
+  async setDisabled(userId: number, disable: boolean): Promise<User> {
+    const user = await this.userRepository.findOne(userId);
+    user.disabled = disable;
+    return await this.userRepository.save(user);
+  }
+
+  /**
    * Resolves with the result of a user permanent deletion
    * @async
    * @function delete

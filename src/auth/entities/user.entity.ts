@@ -54,6 +54,12 @@ export class User {
   @Column('blob')
   avatar: Buffer;
 
+  @Column({
+    type: 'bool',
+    default: false
+  })
+  disabled: boolean;
+
   @CreateDateColumn()
   created: Date;
 

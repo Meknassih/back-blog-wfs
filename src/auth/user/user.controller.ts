@@ -79,6 +79,30 @@ export class UserController {
   }
 
   /**
+   * Disables a user's account
+   * @function disableUser
+   * @param {number} userId The target user's ID
+   * @returns {Promise<User>}
+   */
+  @Patch(':id/disable')
+  @Roles(UserType.ADMIN)
+  async disableUser(@Param('id') userId: number): Promise<User> {
+    return await this.userService.setDisabled(userId, true);
+  }
+
+  /**
+   * Enables a user's account
+   * @function enableUser
+   * @param {number} userId The target user's ID
+   * @returns {Promise<User>}
+   */
+  @Patch(':id/enable')
+  @Roles(UserType.ADMIN)
+  async enableUser(@Param('id') userId: number): Promise<User> {
+    return await this.userService.setDisabled(userId, false);
+  }
+
+  /**
    * Deletes permenently a user
    * @async
    * @function delete
