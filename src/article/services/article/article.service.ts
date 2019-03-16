@@ -91,10 +91,10 @@ export class ArticleService {
    * @param {id} ownedByUserId Specify a user ID to restrict to articles owned only by a user
    * @returns {Promise<Article[]>}
    */
-  async getAll(ownedByUserId?: number): Promise<Article[]> {
+  async getAll(ownedByUser?: User): Promise<Article[]> {
     let articles: Article[];
-    if (ownedByUserId)
-      articles = await this.articleRepository.find({ where: { id: ownedByUserId } });
+    if (ownedByUser)
+      articles = await this.articleRepository.find({ where: { user: ownedByUser } });
     else
       articles = await this.articleRepository.find();
     return articles;

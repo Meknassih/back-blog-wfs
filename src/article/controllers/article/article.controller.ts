@@ -20,12 +20,18 @@ import { CommentaryDto } from 'src/models/commentary';
 @UseGuards(AuthGuard, RoleGuard)
 export class ArticleController {
   constructor(
-    private readonly articleService: ArticleService
+    private readonly articleService: ArticleService,
+    private readonly userService: UserService
   ) { }
 
   @Get()
   async getAll(): Promise<Article[] | HttpException> {
     return await this.articleService.getAll();
+  }
+
+  @Get('listmine')
+  async getAllMine(): Promise<Article[] | HttpException> {
+    return await this.articleService.getAll(this.userService.getCurrentUser());
   }
 
   @Get(':id')
