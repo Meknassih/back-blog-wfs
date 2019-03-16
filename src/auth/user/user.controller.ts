@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, UseGuards, Delete, Body, Patch } from '@nestjs/common';
+import { Controller, Get, HttpException, UseGuards, Delete, Body, Patch, UseInterceptors, FileInterceptor, UploadedFile } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { ResponseService } from '../services/response.service';
 import { User, UserType } from '../entities/user.entity';
@@ -6,6 +6,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { RoleGuard } from '../guards/role.guard';
 import { UserDto } from 'src/models/user';
+import { FileDto } from 'src/models/file-dto';
 
 /**
  * Handles user operations
@@ -46,11 +47,22 @@ export class UserController {
   /**
    * Updates the current user with the new data
    * @function updateCurrentUser
-   * @returns {(User|undefined)}
+   * @returns {Promise<User>}
    */
   @Patch()
   async updateCurrentUser(@Body() userPart: Partial<UserDto>): Promise<User> {
     return await this.userService.updateCurrentUser(userPart);
+  }
+
+  /**
+   * Updates the current user's avatar with the new picture
+   * @function updateCurrentUserAvatar
+   * @returns {Promise<User>}
+   */
+  @Patch('avatar')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async updateCurrentUserAvatar(@UploadedFile() { buffer }: FileDto): Promise<any> {
+    return await this.userService.updateCurrentUserAvatar(buffer);
   }
 
   /**

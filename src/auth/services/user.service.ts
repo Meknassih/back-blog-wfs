@@ -69,13 +69,27 @@ export class UserService {
    * @async
    * @function updateCurrentUser
    * @param {Partial<UserDto>} userPart Attributes of user to be updated
-   * @returns {Promise<DeleteResult>}
+   * @returns {Promise<User>}
    */
   async updateCurrentUser(userPart: Partial<UserDto>): Promise<User> {
     const user = this.getCurrentUser();
     Object.getOwnPropertyNames(userPart).forEach(prop => {
       user[prop] = userPart[prop];
     });
+    return this.currentUser = await this.userRepository.save(user);
+  }
+
+  /**
+   * Updates the avatar of a User and resolves with the new instance
+   * @async
+   * @function updateCurrentUserAvatar
+   * @param {Buffer} avatar New avatar to be updated
+   * @returns {Promise<User>}
+   */
+  async updateCurrentUserAvatar(avatar: Buffer): Promise<User> {
+    const user = this.getCurrentUser();
+    // console.log(avatar);
+    user.avatar = avatar;
     return this.currentUser = await this.userRepository.save(user);
   }
 
